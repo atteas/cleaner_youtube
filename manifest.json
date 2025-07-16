@@ -2,7 +2,7 @@
     "manifest_version": 3,
     "name": "Cleaner YouTube",
     "description": "An extension to block channels and short-videos in YouTube.",
-    "version": "0.0.5",
+    "version": "0.0.6",
     "icons": {
     "16": "icons/CYT_16.png",
     "48": "icons/CYT_48.png",
@@ -22,7 +22,9 @@
                 "scripts/shorts_blocker.js",
                 "scripts/channel_blocker.js",
                 "scripts/nsfw_blocker.js",
-                "scripts/blocked_channels_list_manager.js"
+                "scripts/blocked_channels_list_manager.js",
+                "scripts/block_button.js",
+                "icons/blockIcon.png"
             ],
             "matches": ["https://*.youtube.com/*"]
         }
