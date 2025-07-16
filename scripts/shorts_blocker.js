@@ -3,7 +3,7 @@
   CYT - Cleaner YouTube | Shorts Blocker
 
   programmer: atteas (github)
-  version: 0.02
+  version: 0.03
 
 ***************************/
 
