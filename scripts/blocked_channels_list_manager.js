@@ -3,7 +3,7 @@
   CYT - Cleaner YouTube | Blocked-Channels-list Manager
 
   programmer: atteas (github)
-  version: 0.04
+  version: 0.05
 
 ***************************/
 
