@@ -3,13 +3,59 @@
   CYT - Cleaner YouTube | Shorts Blocker
 
   programmer: atteas (github)
-  version: 0.06
+  version: 0.07
 
 ***************************/
 
 
 /*************** MAIN *****************/
 export function init(){
+
+    function removeShorts(){
+        //Remove shorts shelfs
+        const shortsShelfs = [
+            ...document.querySelectorAll('ytd-reel-shelf-renderer'),
+            ...document.querySelectorAll('ytd-rich-shelf-renderer'),
+            ...document.querySelectorAll('grid-shelf-view-model')
+        ];
+        shortsShelfs.forEach(node => {
+            node.remove();
+        });
+
+        //Remove shorts videos
+        const videos = document.querySelectorAll('ytd-video-renderer');
+        videos.forEach(node => {
+            const shortsLink = node.querySelector('a[href^="https://www.youtube.com/shorts"]');
+            if (shortsLink){
+                node.remove();
+            }
+        });
+
+        
+        //Remove shorts from channel
+        const channelShorts = document.querySelectorAll('ytm-shorts-lockup-view-model-v2');
+        channelShorts.forEach(node => {
+            const shortsHolder = node.closest("div#contents");
+            shortsHolder?.remove();
+        });
+
+        //Remove shorts tab from the side (extended side)
+        const sideTabsExtended = document.querySelectorAll("ytd-guide-entry-renderer");
+        sideTabsExtended.forEach(node => {
+            const tabTitle = node.querySelector("yt-formatted-string.ytd-guide-entry-renderer")?.textContent;
+            if (tabTitle == "Shorts"){
+                node.remove();
+            }
+        });
+
+        //Remove shorts tab from the side (collapsed side)
+        const sideTabsCollapsed = document.querySelectorAll("ytd-mini-guide-entry-renderer");
+        sideTabsCollapsed.forEach(node => {
+            if (node.getAttribute?.("aria-label") == "Shorts"){
+                node.remove();
+            }
+        });        
+    }
 
     //Observer to document.body
     const observer = new MutationObserver(mutations => {
@@ -46,7 +92,16 @@ export function init(){
                     }
                 }
 
-                //Remove shorts tab from the side
+                //Remove shorts tab from the side (extended side)
+                else if (nodeTagName == "ytd-guide-entry-renderer"){
+                    const tabTitle = node.querySelector("yt-formatted-string.ytd-guide-entry-renderer")?.textContent;
+                    if (tabTitle == "Shorts"){
+                        console.log("Shorts tab found from side: ", node);
+                        node.remove();
+                    }
+                }
+
+                //Remove shorts tab from the side (collapsed side)
                 else if (nodeTagName == "ytd-mini-guide-entry-renderer"){
                     if (node.getAttribute?.("aria-label") == "Shorts"){
                         console.log("Shorts tab found from side: ", node);
@@ -62,4 +117,11 @@ export function init(){
         childList: true,
         subtree: true
     });
+
+    //Initial scan
+    function initialScan(retries = 10, delay = 200) {
+        removeShorts();
+        if (retries > 0) setTimeout(() => initialScan(retries - 1, delay), delay);
+    }
+    initialScan();
 }

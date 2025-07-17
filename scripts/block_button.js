@@ -3,7 +3,7 @@
   CYT - Cleaner YouTube | Block Button
 
   programmer: atteas (github)
-  version: 0.06
+  version: 0.07
 
 ***************************/
 
@@ -35,8 +35,7 @@ function waitForElm(selector) {
 /*************** MAIN *****************/
 export function init(){
     //Wait for the dropdown menu with options that can be opened with the three dots
-    waitForElm('ytd-popup-container tp-yt-iron-dropdown').then((videoOptionsDropdown) => {
-        const optionsListbox = videoOptionsDropdown.querySelector("tp-yt-paper-listbox#items");
+    waitForElm('ytd-popup-container tp-yt-iron-dropdown tp-yt-paper-listbox#items').then((optionsListbox) => {
 
         //Add own button
         const buttonOuterDiv = document.createElement("div");
@@ -56,6 +55,8 @@ export function init(){
         buttonInnerDiv.appendChild(buttonIcon);
         buttonInnerDiv.appendChild(blockButtonText);
         buttonOuterDiv.appendChild(buttonInnerDiv);
+
+        //Add button to dropdown
         optionsListbox.appendChild(buttonOuterDiv);
 
         //Event listener for button that adds the channel to blocked channels & reloads the page

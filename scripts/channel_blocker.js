@@ -3,7 +3,7 @@
   CYT - Cleaner YouTube | Channel Blocker
 
   programmer: atteas (github)
-  version: 0.06
+  version: 0.07
 
 ***************************/
 
@@ -12,7 +12,7 @@
 export function init(){
     let blockedChannels = ["Pirate Software"]; //THIS IS TEMPORARY!!! Although blocking this guy might seem like a really good option.
 
-    function removeBlockedVideos() {
+    function removeBlockedChannels() {
         //Main
         const metadataDivs = document.querySelectorAll('div#metadata');
         metadataDivs.forEach(node => {
@@ -48,6 +48,17 @@ export function init(){
                 channelDiv?.remove();
             }
         });
+
+        //Watching a video
+        const recommendedVideos = document.querySelectorAll("yt-lockup-view-model");
+        recommendedVideos.forEach(node => {
+            //Check if channel is blocked
+            const channelName = node.querySelector('yt-content-metadata-view-model span[role="text"]')?.textContent;
+
+            if (blockedChannels.includes(channelName)){
+                node.remove();
+            }
+        });
     }
 
     //Observer to document.body
@@ -61,17 +72,16 @@ export function init(){
 
 
                 //Remove videos made by blocked channels from main screen
-                if (nodeTagName == "div" && node.id == "metadata"){
+                if (nodeTagName == "ytd-rich-item-renderer"){
 
                     //Check if channel is blocked
                     const channelName = node.querySelector("yt-formatted-string.ytd-channel-name")?.title;
 
                     if (blockedChannels.includes(channelName)){
 
-                        //Get video-div of metadata-div and delete it
-                        const videoDiv = node.closest("ytd-rich-item-renderer");
-                        console.log("Blocked a video from ", channelName);
-                        videoDiv?.remove();
+                        //Delete the node
+                        console.log("Blocked a video from 1 ", channelName);
+                        node.remove();
                     }
                 }
 
@@ -84,10 +94,25 @@ export function init(){
 
                     if (blockedChannels.includes(channelName)){
 
-                        //Get video-div of channel-info-div and delete it
-                        const videoDiv = node.closest("ytd-video-renderer");
-                        console.log("Blocked a video from ", channelName);
-                        videoDiv?.remove();
+                        //Delete the node
+                        console.log("Blocked a video from 2 ", channelName);
+                        node.remove();
+                    }
+                }
+
+
+                //Remove videos made by blocked channels when in a video
+                else if (nodeTagName == "yt-lockup-view-model"){
+
+                    //Check if channel is blocked
+                    const channelName = node.querySelector('yt-content-metadata-view-model span[role="text"]')?.textContent;
+                    console.log(channelName);
+
+                    if (blockedChannels.includes(channelName)){
+
+                        //Delete the node
+                        console.log("Blocked a video from 3 ", channelName);
+                        node.remove();
                     }
                 }
                 
@@ -122,8 +147,22 @@ export function init(){
     let scrollTimeout;
     window.addEventListener('scroll', () => {
         clearTimeout(scrollTimeout);
-        scrollTimeout = setTimeout(removeBlockedVideos, 200);
+        scrollTimeout = setTimeout(removeBlockedChannels, 200);
     });
 
-    removeBlockedVideos();
+
+    //Initial scan
+    function initialScan(retries = 10, delay = 200) {
+        removeBlockedChannels();
+        if (retries > 0) setTimeout(() => initialScan(retries - 1, delay), delay);
+    }
+
+    //Run initial scan if url changes an on start
+    let lastUrl = null;
+    setInterval(() => {
+        if (location.href !== lastUrl) {
+            lastUrl = location.href;
+            initialScan();
+        }
+    }, 500);
 }
