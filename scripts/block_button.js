@@ -3,65 +3,61 @@
   CYT - Cleaner YouTube | Block Button
 
   programmer: atteas (github)
-  version: 0.07
+  version: 0.08
 
 ***************************/
 
 
-/*************** FUNCTIONS *****************/
+/*************** IMPORTS *****************/
+import { addBlockedChannel } from './blocked_channels_list_manager.js';
 
-//function to wait for an element
-function waitForElm(selector) {
-  return new Promise(resolve => {
-      if (document.querySelector(selector)) {
-          return resolve(document.querySelector(selector));
-      }
-
-      const observer = new MutationObserver(mutations => {
-          if (document.querySelector(selector)) {
-              observer.disconnect();
-              resolve(document.querySelector(selector));
-          }
-      });
-
-      observer.observe(document.body, {
-          childList: true,
-          subtree: true
-      });
-  });
-}
 
 
 /*************** MAIN *****************/
-export function init(){
-    //Wait for the dropdown menu with options that can be opened with the three dots
-    waitForElm('ytd-popup-container tp-yt-iron-dropdown tp-yt-paper-listbox#items').then((optionsListbox) => {
+export function init(){    
+    setInterval(() => {
+        const dropDownMenus = document.querySelectorAll('ytd-popup-container tp-yt-iron-dropdown');
 
-        //Add own button
-        const buttonOuterDiv = document.createElement("div");
-        buttonOuterDiv.className = "cyt_buttonOuterDiv";
+        dropDownMenus.forEach(dropDownMenu => {
 
-        const buttonInnerDiv = document.createElement("div");
-        buttonInnerDiv.className = "cyt_buttonInnerDiv";
+            //Find itemMenu
+            var itemMenu = null;
+            if (dropDownMenu.querySelector('tp-yt-paper-listbox#items') != null){
+                itemMenu = dropDownMenu.querySelector('tp-yt-paper-listbox#items');
+            } else if (dropDownMenu.querySelector('yt-list-view-model[role="menu"]') != null){
+                itemMenu = dropDownMenu.querySelector('yt-list-view-model[role="menu"]');
+            }
 
-        const buttonIcon = document.createElement("img");
-        buttonIcon.className = "cyt_buttonIcon";
-        buttonIcon.src = chrome.runtime.getURL("../icons/blockIcon.png");
+            if (itemMenu?.lastChild.className != "cyt_buttonOuterDiv"){
+                //Add own button
+                const buttonOuterDiv = document.createElement("div");
+                buttonOuterDiv.className = "cyt_buttonOuterDiv";
 
-        const blockButtonText = document.createElement("p");
-        blockButtonText.className = "cyt_buttonText";
-        blockButtonText.textContent = "Block Channel"
+                const buttonInnerDiv = document.createElement("div");
+                buttonInnerDiv.className = "cyt_buttonInnerDiv";
 
-        buttonInnerDiv.appendChild(buttonIcon);
-        buttonInnerDiv.appendChild(blockButtonText);
-        buttonOuterDiv.appendChild(buttonInnerDiv);
+                const buttonIcon = document.createElement("img");
+                buttonIcon.className = "cyt_buttonIcon";
+                buttonIcon.src = chrome.runtime.getURL("../icons/blockIcon.png");
 
-        //Add button to dropdown
-        optionsListbox.appendChild(buttonOuterDiv);
+                const blockButtonText = document.createElement("p");
+                blockButtonText.className = "cyt_buttonText";
+                blockButtonText.textContent = "Block Channel"
 
-        //Event listener for button that adds the channel to blocked channels & reloads the page
-        buttonOuterDiv.addEventListener("click", function(){
-            console.log("button was clicked. functionality will be added later.");
+                buttonInnerDiv.appendChild(buttonIcon);
+                buttonInnerDiv.appendChild(blockButtonText);
+                buttonOuterDiv.appendChild(buttonInnerDiv);
+
+                //Add to itemMenu
+                itemMenu.appendChild(buttonOuterDiv);
+
+                //Event listener for button that adds the channel to blocked channels & reloads the page
+                buttonOuterDiv.addEventListener("click", function(){
+                    console.log("button was clicked. functionality will be added later.");
+                    const channelName = "null";
+                    addBlockedChannel(channelName);
+                });
+            }
         });
-    });
+    }, 500);
 }

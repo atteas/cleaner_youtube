@@ -3,7 +3,7 @@
   CYT - Cleaner YouTube | Blocked-Channels-list Manager
 
   programmer: atteas (github)
-  version: 0.07
+  version: 0.08
 
 ***************************/
 
@@ -33,6 +33,6 @@ export function setBlockedChannels(blockedChannelsList){
 export function addBlockedChannel(channel){
     if (!blockedChannels.includes(channel)){
         blockedChannels.push(channel);
-        storage.set({ blockedChannels: blockedChannels });
+        storage.set({ cyt_blockedChannels: blockedChannels });
     }
 }

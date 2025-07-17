@@ -3,7 +3,7 @@
   CYT - Cleaner YouTube | Script Loader
 
   programmer: atteas (github)
-  version: 0.07
+  version: 0.08
 
 ***************************/
 

@@ -3,7 +3,7 @@
   CYT - Cleaner YouTube | Channel Blocker
 
   programmer: atteas (github)
-  version: 0.07
+  version: 0.08
 
 ***************************/
 
@@ -157,7 +157,7 @@ export function init(){
         if (retries > 0) setTimeout(() => initialScan(retries - 1, delay), delay);
     }
 
-    //Run initial scan if url changes an on start
+    //Run initial scan if url changes and also run on start
     let lastUrl = null;
     setInterval(() => {
         if (location.href !== lastUrl) {
