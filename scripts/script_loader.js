@@ -3,7 +3,7 @@
   CYT - Cleaner YouTube | Script Loader
 
   programmer: atteas (github)
-  version: 0.08
+  version: 0.09
 
 ***************************/
 
@@ -15,7 +15,7 @@
     const blockButton = await import('./block_button.js');
 
     //initialize scripts
-    await blockedChannelsManager.init();
+    await blockedChannelsManager.initBlockedChannelsManager();
     shortsBlocker.init();
     channelBlocker.init();
     blockButton.init();

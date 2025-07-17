@@ -3,7 +3,7 @@
   CYT - Cleaner YouTube | Block Button
 
   programmer: atteas (github)
-  version: 0.08
+  version: 0.09
 
 ***************************/
 
@@ -14,11 +14,26 @@ import { addBlockedChannel } from './blocked_channels_list_manager.js';
 
 
 /*************** MAIN *****************/
-export function init(){    
+export function init(){
+    //Get where dropdown-menu was opened
+    let lastOpenMenuButton = null;
+    document.addEventListener("click", function(e){
+        const target = e.target;
+        if (target.matches('yt-icon-button.dropdown-trigger.ytd-menu-renderer span.yt-icon-shape.yt-icon.yt-spec-icon-shape div')){
+            lastOpenMenuButton = target;
+            console.log("opened menu button: ", lastOpenMenuButton);
+        }
+    });
+    
+    //Add button
     setInterval(() => {
         const dropDownMenus = document.querySelectorAll('ytd-popup-container tp-yt-iron-dropdown');
 
         dropDownMenus.forEach(dropDownMenu => {
+            //Look if dropDownMenu is the wrong type
+            if (dropDownMenu.querySelector("ytd-multi-page-menu-renderer") != null){
+                return;
+            }
 
             //Find itemMenu
             var itemMenu = null;
@@ -51,11 +66,23 @@ export function init(){
                 //Add to itemMenu
                 itemMenu.appendChild(buttonOuterDiv);
 
+                //Click the dropdown-menu again so that it's shaped correctly
+                if (lastOpenMenuButton){
+                    lastOpenMenuButton.click();
+                }
+
                 //Event listener for button that adds the channel to blocked channels & reloads the page
                 buttonOuterDiv.addEventListener("click", function(){
-                    console.log("button was clicked. functionality will be added later.");
-                    const channelName = "null";
-                    addBlockedChannel(channelName);
+                    console.log("block-button was clicked");
+                    if (lastOpenMenuButton){
+                        const detailsDiv = lastOpenMenuButton.closest('div#details.ytd-rich-grid-media');
+                        const channelName = detailsDiv.querySelector("ytd-channel-name#channel-name")?.querySelector('yt-formatted-string.ytd-channel-name')?.title;
+
+                        addBlockedChannel(channelName);
+
+                        //Reload the page
+                        location.reload();
+                    }
                 });
             }
         });

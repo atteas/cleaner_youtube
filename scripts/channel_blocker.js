@@ -3,14 +3,19 @@
   CYT - Cleaner YouTube | Channel Blocker
 
   programmer: atteas (github)
-  version: 0.08
+  version: 0.09
 
 ***************************/
 
 
+/*************** IMPORTS *****************/
+import { getBlockedChannels } from '../scripts/blocked_channels_list_manager.js';
+
+
+
 /*************** MAIN *****************/
 export function init(){
-    let blockedChannels = ["Pirate Software"]; //THIS IS TEMPORARY!!! Although blocking this guy might seem like a really good option.
+    let blockedChannels = getBlockedChannels();
 
     function removeBlockedChannels() {
         //Main

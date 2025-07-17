@@ -3,7 +3,7 @@
   CYT - Cleaner YouTube | popup.js
 
   programmer: atteas (github)
-  version: 0.08
+  version: 0.09
 
 ***************************/
 

@@ -3,7 +3,7 @@
   CYT - Cleaner YouTube | cyt_blockedChannelsManager.html js-file
 
   programmer: atteas (github)
-  version: 0.08
+  version: 0.09
 
 ***************************/
 
